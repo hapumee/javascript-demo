@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+	<title>Native - Drag and Drop</title>
+	<style>
+		.drag1 { width: 50px; height: 50px; top: 50px; left: 50px; position: absolute; background-color: #ffa500; margin: 10px; cursor: move; }
+		.drag2 { width: 50px; height: 50px; top: 150px; left: 50px; position: absolute; background-color: #8c3c00; margin: 10px; cursor: move; }
+		.drag3 { width: 50px; height: 50px; top: 250px; left: 50px; position: absolute; background-color: #0075c8; margin: 10px; cursor: move; }
+		#drop { width: 150px; height: 150px; top: 50px; left: 300px; position: absolute; z-index: -1; background-color: #e0e0e0; border: 1px solid #000000; }
+	</style>
+	<script>
+		var _startX = 0;	// mouse starting position
+		var _startY = 0;
+		var _offsetX = 0;	// current element offset
+		var _offsetY = 0;
+		var _draggedElement = null;	// the element from onMouseDown to onMouseMove event
+
+		function initialize() {
+			var elements = document.getElementById("drag").children;
+
+			for(var i = 0; i < elements.length; i++) {
+				elements[i].addEventListener("mousedown", onDragStart);
+				elements[i].addEventListener("mouseup", onDragEnd);
+			}
+		}
+
+		function onDragStart(evt) {
+			if(!!evt) { evt = window.event; }
+
+			var target = (!!evt.target) ? evt.target : evt.srcElement;		// IE : e.srcElement, others : e.target
+			
+			// grab the mouse position
+			_startX = evt.clientX;
+			_startY = evt.clientY;
+			
+			// grab the clicked element position
+			_offsetX = parseInt(window.getComputedStyle(target).left) || 0;
+			_offsetY = parseInt(window.getComputedStyle(target).top) || 0;
+			
+			// setup the element while element is dragged
+			_draggedElement = target;
+
+			// setup event onmousemove
+			document.onmousemove = onDragMove;
+		}
+
+		function onDragMove(evt) {
+			if(!!evt) { evt = window.event; }
+
+			// calculate positions of dragged element
+			_draggedElement.style.left = (_offsetX + evt.clientX - _startX) + "px";
+			_draggedElement.style.top = (_offsetY + evt.clientY - _startY) + "px";
+		}
+
+		function onDragEnd(evt) {
+			if(_draggedElement != null) {
+				// relieve events and element
+				document.onmousemove = null;
+				_draggedElement = null;
+			}
+		}
+
+		window.onload = function() {
+			initialize();
+		};
+	</script>
+</head>
+<body>
+	<div id="drag">
+		<div class="drag1"></div>
+		<div class="drag2"></div>	
+		<div class="drag3"></div>
+	</div>
+	<div id="drop"></div>
+</body>
+</html>
