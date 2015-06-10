@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Javascript Metronome</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <style>
+        .example { font-family: Arial; font-size: 12px; }
+        .status { width: 100px; height: 200px; padding: 10px; overflow-y: auto; }
+        .statusline { font-size: 10px; background-color: #E0E0E0; margin: 3px 0; padding: 2px; }
+        .metr_input { width: 40px; text-align: center; }
+        .beats_text { width: 200px; height: 40px; margin-top:10px; margin-right: 10px; text-align: center; }
+        #count { width: 50px; display: inline-block; text-align: right; }
+    </style>
+</head>
+<body>
+    <table class="example">
+        <tr>
+            <td><div id="metronome_container"></div></td>
+            <td><div class="status"></div></td>
+        </tr>
+        <tr>
+            <td colspan=2 id="inputs">
+                <div>
+                    <span>BPM: </span>
+                    <button id="btn_decrease">&lt;</button>
+                    <input class='metr_input' type='text' id='bpm' value='60' />
+                    <button id="btn_increase" style="margin-right: 10px;">&gt;</button>
+                    <span>박자: </span>
+                    <select id="times"></select>
+                    <button id='startstop'>start</button>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2 id="beats"></td>
+        </tr>
+        <tr>
+            <td colspan=2>
+                <div style="margin-top:25px;">
+                    * BPM 설정 범위는 60~200 입니다.<br>
+                    * 박자의 출처는 <a href="http://terms.naver.com/entry.nhn?docId=363609&cid=42605&categoryId=42605" target="_blank">네이버 용어사전</a> 입니다.
+                </div>
+            </td>
+        </tr>
+    </table>
+    <iframe id="screen_on_off" style="display:none;"></iframe>
+
+    <script type="text/javascript" src="js/jindo_2.8.0.js"></script>
+    <script type="text/javascript" src="js/raphael_2.1.0.js"></script>
+    <script type="text/javascript" src="js/metronome_tap.js"></script>
+    <script>
+        /*global $ Raphael soundManager metronome*/
+        var paper = Raphael("metronome_container", 200, 200);
+         
+        var m = metronome({
+            len: 200,
+            angle: 20,
+            paper: paper,
+            sound: true,
+            repeats : 999999,
+            audio_w: "https://github.com/wilson428/metronome/blob/master/tick.wav?raw=true",
+            audio_s: "audio/beep-07.wav"
+        });
+        m.shapes().outline.attr("fill", "#0962ba");
+        m.shapes().arm.attr("stroke", "#EEE");
+         
+        m.init();
+        m.screen_on_off(true);
+    </script>
+</body>
+</html>
