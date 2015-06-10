@@ -6,27 +6,52 @@
 	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 	<title>Native - Drag and Drop</title>
 	<style>
-		.drag1 { width: 50px; height: 50px; top: 50px; left: 50px; position: absolute; background-color: #ffa500; margin: 10px; cursor: move; }
-		.drag2 { width: 50px; height: 50px; top: 150px; left: 50px; position: absolute; background-color: #8c3c00; margin: 10px; cursor: move; }
-		.drag3 { width: 50px; height: 50px; top: 250px; left: 50px; position: absolute; background-color: #0075c8; margin: 10px; cursor: move; }
+		.drag1 { width: 50px; height: 50px; top: 50px; left: 50px; position: absolute; background-color: #ffa500;  cursor: move; }
+		.drag2 { width: 50px; height: 50px; top: 150px; left: 50px; position: absolute; background-color: #8c3c00; cursor: move; }
+		.drag3 { width: 50px; height: 50px; top: 250px; left: 50px; position: absolute; background-color: #0075c8; cursor: move; }
 		#drop { width: 150px; height: 150px; top: 50px; left: 300px; position: absolute; z-index: -1; background-color: #e0e0e0; border: 1px solid #000000; }
 	</style>
 	<script>
-		var _startX = 0;	// mouse starting position
-		var _startY = 0;
-		var _offsetX = 0;	// current element offset
-		var _offsetY = 0;
-		var _draggedElement = null;	// the element from onMouseDown to onMouseMove event
+		var _startX = 0;				// mouse starting position (left)
+		var _startY = 0;				// mouse starting position (top)
 
+		var _offsetX = 0;				// current element offset (left)
+		var _offsetY = 0;				// current element offset (top)
+
+		var _draggedElement = null;		// the element from onMouseDown to onMouseMove event
+
+		var _targetX = 0;				// selected element position (left) when the move ended
+		var _targetY = 0;				// selected element position (top) when the move ended
+		var _targetWidth = 0;			// width of selected element
+		var _targetHeight = 0;			// height of selected element
+
+		var _dropElementX = 0;			// drop element position (left)
+		var _dropElementY = 0;			// drop element position (top)
+		var _dropElementWidth = 0;		// width of drop element
+		var _dropElementHeight = 0;		// height of drop element
+
+		var _debugElement = null;		// debugging message area
+		var _tempZIndex = 0;			// setup for z-index
+
+		/*
+		 *	initialize of all draggable elements
+		 */
 		function initialize() {
 			var elements = document.getElementById("drag").children;
 
 			for(var i = 0; i < elements.length; i++) {
 				elements[i].addEventListener("mousedown", onDragStart);
 				elements[i].addEventListener("mouseup", onDragEnd);
+				elements[i].style.zIndex = (i + 1) * 10;
 			}
+
+			// debugging message area
+			_debugElement = document.getElementById("debug");
 		}
 
+		/*
+		 *	drag is starting
+		 */
 		function onDragStart(evt) {
 			if(!!evt) { evt = window.event; }
 
@@ -42,27 +67,91 @@
 			
 			// setup the element while element is dragged
 			_draggedElement = target;
+			_tempZIndex = _draggedElement.style.zIndex;
+			_draggedElement.style.zIndex = 10000;
 
 			// setup event onmousemove
 			document.onmousemove = onDragMove;
 		}
 
+		/*
+		 *	the element is moving
+		 */
 		function onDragMove(evt) {
 			if(!!evt) { evt = window.event; }
 
 			// calculate positions of dragged element
 			_draggedElement.style.left = (_offsetX + evt.clientX - _startX) + "px";
 			_draggedElement.style.top = (_offsetY + evt.clientY - _startY) + "px";
+
+			// debugging message
+			_debugElement.innerHTML = "position: left = " + _draggedElement.style.left + ", top = " + _draggedElement.style.top;
 		}
 
+		/*
+		 *	drag ended
+		 */
 		function onDragEnd(evt) {
 			if(_draggedElement != null) {
+
+				// checkInsideDropArea():
+				//		when the target draggable element is overlapped the drop area,
+				//		it is dropped in the center of drop area.
+				if(checkInsideDropArea()) {
+					var newXY = getDropCenter();		// getDropCenter() : get the position of the center of drop area
+					
+					_draggedElement.style.left = newXY[0] + "px";
+					_draggedElement.style.top = newXY[1] + "px";
+				} else {
+					_draggedElement.style.left = _offsetX + "px"; 
+					_draggedElement.style.top = _offsetY + "px";
+				}
+
+				// restore z-index
+				_draggedElement.style.zIndex = _tempZIndex;
+
+				// debugging message
+				_debugElement.innerHTML = "position: left = " + _draggedElement.style.left + ", top = " + _draggedElement.style.top;
+
 				// relieve events and element
 				document.onmousemove = null;
 				_draggedElement = null;
 			}
 		}
 
+		/*
+		 *	check the target draggable element is overlapped the drop area or not
+		 */
+		function checkInsideDropArea() {
+			_targetX = parseInt(_draggedElement.style.left);
+			_targetY = parseInt(_draggedElement.style.top);
+			_targetWidth = parseInt(window.getComputedStyle(_draggedElement).width);
+			_targetHeight = parseInt(window.getComputedStyle(_draggedElement).width);
+
+			_dropElementX = parseInt(window.getComputedStyle(document.getElementById("drop")).left);
+			_dropElementY = parseInt(window.getComputedStyle(document.getElementById("drop")).top);
+			_dropElementWidth = parseInt(window.getComputedStyle(document.getElementById("drop")).width);
+			_dropElementHeight = parseInt(window.getComputedStyle(document.getElementById("drop")).height);
+
+			var minX = _dropElementX - _targetWidth;
+			var maxX = _dropElementX + _dropElementWidth;
+			var minY = _dropElementY - _targetHeight;
+			var maxY = _dropElementY + _dropElementHeight;
+
+			return (_targetX >= minX && _targetX <= maxX && _targetY >= minY && _targetY <= maxY) ? true : false;
+		}
+
+		/*
+		 *	get the position of the center of drop area
+		 */
+		function getDropCenter() {
+			var dropCenterX = _dropElementX + (_dropElementWidth / 2) - (_targetWidth / 2);
+			var dropCenterY = _dropElementY + (_dropElementHeight / 2) - (_targetHeight / 2);
+
+			return [dropCenterX, dropCenterY];
+		}
+
+		// onload the page
 		window.onload = function() {
 			initialize();
 		};
@@ -75,5 +164,6 @@
 		<div class="drag3"></div>
 	</div>
 	<div id="drop"></div>
+	<pre id="debug">position: left = , top = </pre>
 </body>
 </html>
