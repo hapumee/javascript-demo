@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Random Message Example</title>
+	<script type="text/javascript" src="https://fb.me/react-0.13.3.js"></script>
+	<script type="text/javascript" src="https://fb.me/JSXTransformer-0.13.3.js"></script>
+	<script type="text/jsx">
+		var messages = ['HelloWorld', 'HelloPlanet', 'HelloUniverse'];
+		var textMessages = convertArrayToText();
+		
+		function convertArrayToText() {
+			var textMessages = "";
+			for(var i = 0; i < messages.length; i++) {
+				textMessages += messages[i] + ((i < messages.length - 1) ? ", " : "");
+			}
+			return textMessages;
+		}
+
+		// create 'Greeting' component
+		var Greeting = React.createClass({
+			render: function() {
+				return (
+					<div>
+						<p>{this.props.messages}</p>
+						<p>[Index={this.props.idx}] {this.props.message}</p>
+					</div>
+				);
+			}
+		});
+
+		// create 'RandomMessage' component (parent of 'MessageView' component)
+		var RandomMessage = React.createClass({
+			getInitialState: function() {
+				return {message: 'HelloUniverse'};
+			},
+
+			_onClick: function() {
+				var idx = Math.floor((Math.random()) * 3);
+				var randomMessage = messages[idx];
+
+				this.setState({message: randomMessage});
+			},
+
+			render: function() {
+				return (
+					<div>
+						<MessageView message={this.state.message}/>
+						<p><input type="button" onClick={this._onClick} value="Change Message"/></p>
+					</div>
+				);
+			}
+		});
+
+		// create 'MessageView' component (child of 'RandonMessage' component)
+		var MessageView = React.createClass({
+			render: function() {
+				return (
+					<p>{this.props.message}</p>
+				)
+			}
+		});
+
+
+		// rendering
+		/*
+		 *	(1) automatically show messages randomly
+		 *
+			setInterval(function() {
+				var idx = Math.floor((Math.random()) * 3);
+				var randomMessage = messages[idx];
+
+				React.render(
+					<Greeting idx={idx} message={randomMessage} messages={textMessages} />,
+					document.getElementById('greeting-div')
+				);
+			}, 2000);
+		*/
+
+		/*
+		 *	(2) adapt onClick event
+		 */
+			var idx = Math.floor((Math.random()) * 3);
+			var randomMessage = messages[idx];
+
+			React.render(
+				<RandomMessage />,
+				document.getElementById('greeting-div')
+			);
+	</script>
+</head>
+<body>
+	<div id="greeting-div"></div>
+</body>
+</html>

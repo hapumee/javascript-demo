@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <title>ReactJS</title>
+    <script type="text/javascript" src="https://fb.me/react-0.13.3.js"></script>
+    <script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/jsx">
+      // createClass : to create a new React component
+      var CommentBox = React.createClass({displayName: "CommentBox",
+        // render : returns a tree of React components that will eventually render to HTML
+        render: function() {
+          return (
+            React.createElement("div", {className: "CommentBox"}, "Hello, world! I am a CommentBox.")
+          );
+        }
+      });
+
+      React.render(
+        React.createElement(CommentBox, null),
+        document.getElementById("content")
+      );
+    </script>
+  </body>
+</html>
+
