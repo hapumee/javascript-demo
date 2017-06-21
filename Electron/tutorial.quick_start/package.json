@@ -1,6 +1,0 @@
-{
-  "name"        : "quick_start",
-  "version"     : "1.0.0",
-  "description" : "Simple Electron Example - Hello World!",
-  "main"        : "main.js"
-}
