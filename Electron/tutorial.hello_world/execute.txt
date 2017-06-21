@@ -1,0 +1,5 @@
+- if you are on path 'demo/Electron/'
+    > electron tutorial.hello_world
+
+- if you are on path 'demo/Electron/tutorial.hello_world/'
+    > electron .
