@@ -1,0 +1,38 @@
+<!--The whole content below can be removed with the new code.-->
+<h1>{{title}}</h1>
+
+<!-- // Heroes list -->
+<h2>My Heroes</h2>
+<ul class="heroes">
+  <li *ngFor="let hero of heroes" [class.selected]="hero === selectedHero" (click)="onSelect(hero)">
+    <span class="badge">{{hero.id}}</span> {{hero.name}}
+  </li>
+</ul>
+
+<!-- // Hero's detail page -->
+
+<!-- TUTORIAL 2. The Hero Editor : with a value 'hero' -->
+<!-- <h2>{{hero.name}} details!</h2>
+<div>
+  <label>id: </label>{{hero.id}}
+</div>
+<div>
+  <label>name: </label>
+  <input [(ngModel)]="hero.name" placeholder="name">
+</div> -->
+
+<!-- TUTORIAL 3. Master/Detail : with a value in heroes list -->
+<!-- <div *ngIf="selectedHero">
+  <h2>{{selectedHero.name}} details!</h2>
+  <div>
+    <label>id: </label>{{selectedHero.id}}
+  </div>
+  <div>
+    <label>name: </label>
+    <input [(ngModel)]="selectedHero.name" placeholder="name">
+  </div>
+</div> -->
+
+<!-- TUTORIAL 4. Multiple Components
+      : separete sub-content template 'hero-detail.component.html'-->
+<hero-detail [hero]="selectedHero"></hero-detail>
