@@ -17,10 +17,11 @@ export class HeroService {
   constructor(private http: Http) { }
 
   getHeroes(): Promise<Hero[]> {
-    return this.http.get(this.heroesUrl)
-                    .toPromise()
-                    .then(response => response.json().data as Hero[])
-                    .catch(this.handleError);
+    return this.http
+          .get(this.heroesUrl)
+          .toPromise()
+          .then(response => response.json().data as Hero[])
+          .catch(this.handleError);
   }
 
   private headers = new Headers({'Content-Type': 'application/json'});
