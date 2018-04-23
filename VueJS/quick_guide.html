@@ -33,7 +33,7 @@
 <!-- App2 -->
 <p class="title">DOM attribute</p>
 <div id="app-2" class="demo">
-        <span v-bind:title="message">
+        <span :title="message">
             Hover your mouse over me for a few seconds to see my dynamically bound title!
         </span>
 </div>
@@ -58,7 +58,7 @@
 <p class="title">Handling User Input</p>
 <div id="app-5" class="demo">
     <p>{{message}}</p>
-    <button v-on:click="reverseMessage">Reverse Message</button>
+    <button @click="reverseMessage">Reverse Message</button>
 </div>
 
 <!-- App6 -->
