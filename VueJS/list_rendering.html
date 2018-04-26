@@ -1,0 +1,141 @@
+<html>
+<head>
+    <title>Computed Properties</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+<div class="demo">
+    <ul id="example-1">
+        <li v-for="item in items">
+            {{ item.message }}
+        </li>
+    </ul>
+</div>
+
+<div class="demo">
+    <div v-for="item of items"></div>
+</div>
+
+<div class="demo">
+    <ul id="example-2">
+        <li v-for="(item, index) in items">
+            {{ parentMessage }} - {{ index }} - {{ item.message }}
+        </li>
+    </ul>
+</div>
+
+<div class="demo">
+    <ul id="v-for-object">
+        <li v-for="(value, key, index) in object">
+            {{ index }}. {{ key }} : {{ value }}
+        </li>
+    </ul>
+</div>
+
+<div id="user-profile" class="demo">
+    <p>name: {{ userProfile.name }}</p>
+</div>
+
+<div id="filtering" class="demo">
+    <ul>
+        <li v-for="n in evenNumbers">{{ n }}</li>
+    </ul>
+</div>
+
+<div id="filtering-2" class="demo">
+    <ul>
+        <li v-for="n in even(numbers)">{{ n }}</li>
+    </ul>
+</div>
+
+<div id="range-for" class="demo">
+    <span v-for="n in 10">{{ n }}</span>
+</div>
+</body>
+
+<script>
+    var example1 = new Vue({
+        el: '#example-1',
+        data: {
+            items: [
+                { message: 'Foo' },
+                { message: 'Bar' }
+            ]
+        }
+    });
+
+    var example2 = new Vue({
+        el: '#example-2',
+        data: {
+            parentMessage: 'Parent',
+            items: [
+                { message: 'Foo' },
+                { message: 'Bar' }
+            ]
+        }
+    });
+
+    var forObject = new Vue({
+        el: '#v-for-object',
+        data: {
+            object: {
+                firstName: 'John',
+                lastName: 'Doe',
+                age: 30
+            }
+        }
+    });
+
+    var userProfile = new Vue({
+        el: '#user-profile',
+        data: {
+            userProfile: {
+                name: 'Anika'
+            }
+        }
+    });
+
+//    Vue.set(example4.userProfile, 'gender', 'female');
+//    example4.$set(example4.userProfile, 'gender', 'female');
+//    Object.assign(example4.userProfile, {
+//        age: 27,
+//        favoriteColor: 'Vue Green'
+//    });
+//    example4.userProfile = Object.assign({}, example4.userProfile, {
+//        age: 27,
+//        favoriteColor: 'Vue Green'
+//    });
+
+//    console.log(example4.userProfile);
+
+    var filtering = new Vue({
+        el: '#filtering',
+        data: {
+            numbers: [1, 2, 3, 4, 5]
+        },
+        computed: {
+            evenNumbers: function() {
+                return this.numbers.filter(function(number) {
+                    return number % 2 === 0
+                });
+            }
+        }
+    });
+
+    var filtering2 = new Vue({
+        el: '#filtering-2',
+        data: {
+            numbers: [1, 2, 3, 4, 5]
+        },
+        methods: {
+            even: function(numbers) {
+                return numbers.filter(function(number) {
+                    return number % 2 === 0
+                });
+            }
+        }
+    });
+</script>
+</html>
