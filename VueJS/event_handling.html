@@ -1,0 +1,71 @@
+<html>
+<head>
+    <title>Computed Properties</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div id="event-listening" class="demo">
+        <button v-on:click="counter += 1">Add 1</button>
+        <p>The button above has been clicked {{ counter }} times.</p>
+    </div>
+
+    <div id="method-event-handler" class="demo">
+        <button v-on:click="greet">Greeting!</button>
+    </div>
+
+    <div id="inline-method-handler" class="demo">
+        <button v-on:click="say('hi')">say Hi</button>
+        <button v-on:click="say('what')">say What</button>
+    </div>
+
+    <div id="dom-event-access" class="demo">
+        <button v-on:click="warn('Form cannot be submitted yet.', $event)">Submit</button>
+    </div>
+</body>
+
+<script>
+    var eventListening = new Vue({
+        el: '#event-listening',
+        data: {
+            counter: 0
+        }
+    });
+
+    var methodEventHandler = new Vue({
+        el: '#method-event-handler',
+        data: {
+            name: 'World!!'
+        },
+        methods: {
+            greet: function(event) {
+                alert('Hello ' + this.name + '!');
+
+                if (event) {
+                    alert(event.target.tagName);
+                }
+            }
+        }
+    });
+
+    var inlineMethodHandler = new Vue({
+        el: '#inline-method-handler',
+        methods: {
+            say: function(message) {
+                alert(message);
+            }
+        }
+    });
+
+    var domEventAccess = new Vue({
+        el: '#dom-event-access',
+        methods: {
+            warn: function(message, event) {
+                if (event) event.preventDefault();
+                alert(message);
+            }
+        }
+    });
+</script>
+</html>
