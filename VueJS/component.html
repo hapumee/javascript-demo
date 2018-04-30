@@ -1,0 +1,210 @@
+<html>
+<head>
+    <title>Computed Properties</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="./libs/currency-validator.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div id="example" class="demo">
+        <my-component></my-component>
+    </div>
+
+    <div id="example-2" class="demo">
+        <simple-counter></simple-counter>
+        <simple-counter></simple-counter>
+        <simple-counter></simple-counter>
+    </div>
+
+    <div id="example-3" class="demo">
+        <child my-message="Hello!!"></child>
+    </div>
+
+    <div id="example-4" class="demo">
+        <input v-model="parentMsg">
+        <br>
+        <child v-bind:my-message="parentMsg" style="border: 1px solid red;"></child>
+        <br>
+        <child :my-message="parentMsg" style="border: 1px solid blue;"></child>
+    </div>
+
+    <div id="counter-event-example" class="demo">
+        <p>{{ total }}</p>
+        <button-counter v-on:increment="incrementTotal"></button-counter>
+        <button-counter v-on:increment="incrementTotal"></button-counter>
+    </div>
+
+    <div id="currency-app" class="demo">
+        <currency-input label="Price" v-model="price"></currency-input>
+        <currency-input label="Shipping" v-model="shipping"></currency-input>
+        <currency-input label="Handling" v-model="handling"></currency-input>
+        <currency-input label="Discount" v-model="discount"></currency-input>
+        <p>Total: ${{ total }}</p>
+    </div>
+</body>
+
+<script>
+    //-----------
+    // EXAMPLE-1
+    //-----------
+    var Child = {
+        template: '<div>Component!</div>'
+    };
+
+    // create root instance
+    var example1 = new Vue({
+        el: '#example',
+        components: {
+            'my-component': Child
+        }
+    });
+
+    //-----------
+    // EXAMPLE-2
+    //-----------
+//    var data = { counter: 0 }
+
+    Vue.component('simple-counter', {
+        template: '<button v-on:click="counter += 1">{{ counter }}</button>',
+        data: function() {
+            return {
+                counter: 0
+            }
+        }
+    });
+
+    var example2 = new Vue({
+        el: '#example-2'
+    });
+
+    //-----------
+    // EXAMPLE-3
+    //-----------
+    Vue.component('child', {
+        props: ['myMessage'], // define props
+        template: '<span>{{ myMessage }}</span>'
+    });
+
+    var example3 = new Vue({
+        el: '#example-3'
+    });
+
+    //-----------
+    // EXAMPLE-4
+    //-----------
+    var example4 = new Vue({
+        el: '#example-4',
+        data: {
+            parentMsg: 'message from parent'
+        },
+        components: {
+            child: {
+                props: ['myMessage'],
+                template: '<span>{{ myMessage }}</span>'
+            }
+        }
+    });
+
+    //---------------------------
+    // EXAMPLE-5: custom events
+    //---------------------------
+    Vue.component('button-counter', {
+        template: '<button v-on:click="incrementalCounter">{{ counter }}</button>',
+        data: function() {
+            return {
+                counter: 0
+            }
+        },
+        methods: {
+            incrementalCounter: function() {
+                this.counter += 1
+                this.$emit('increment')
+            }
+        }
+    });
+
+    var example5 = new Vue({
+        el: '#counter-event-example',
+        data: {
+            total: 0
+        },
+        methods: {
+            incrementTotal: function() {
+                this.total += 1
+            }
+        }
+    });
+
+    //------------------------------------------
+    // EXAMPLE-6: component with custom events
+    //------------------------------------------
+    Vue.component('currency-input', {
+        template:'\
+            <div>\
+                <label v-if="label">{{ label }}</label>\
+                $\
+                <input\
+                    ref="input"\
+                    v-bind:value="value"\
+                    v-on:input="updateValue($event.target.value)"\
+                    v-on:focus="selectAll"\
+                    v-on:blur="formatValue"\
+                >\
+                </div>\
+        ',
+        props: {
+            value: {
+                type: Number,
+                default: 0
+            },
+            label: {
+                type: String,
+                default: ''
+            }
+        },
+        mounted: function() {
+            this.formatValue()
+        },
+        methods: {
+            updateValue: function(value) {
+                var result = currencyValidator.parse(value, this.value)
+
+                if (result.warning) {
+                    this.$refs.input.value = result.value
+                }
+
+                this.$emit('input', result.value)
+            },
+            formatValue: function() {
+                this.$refs.input.value = currencyValidator.format(this.value)
+            },
+            selectAll: function(event) {
+                setTimeout(function() {
+                    event.target.select()
+                }, 0)
+            }
+        }
+    });
+
+    var example6 = new Vue({
+        el: '#currency-app',
+        data: {
+            price: 0,
+            shipping: 0,
+            handling: 0,
+            discount: 0
+        },
+        computed: {
+            total: function() {
+                return ((
+                    this.price * 100 +
+                    this.shipping * 100 +
+                    this.handling * 100 +
+                    this.discount * 100
+                ) / 100).toFixed(2)
+            }
+        }
+    });
+</script>
+</html>
