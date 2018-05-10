@@ -30,7 +30,7 @@ moduleProject.value('projectListValue', [
   {
     name: 'Polymer',
     site: 'https://www.polymer-project.org/',
-    description: 'Reusable components for the modern web.'
+    description: 'Reusable bubble.html for the modern web.'
   },
   {
     name: 'Spine',
