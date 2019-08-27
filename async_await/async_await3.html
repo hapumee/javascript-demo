@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Async/Await</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+<script type="text/javascript">
+/***** 문제: non-async 함수에서 async 호출하기 *****/
+
+// fn() 함수에서 async 함수 호출하는 코드를 작성해야 하는데... ------------------------
+async function setTimeoutAndCall() {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    return "Show up 1 after 10 seconds";
+}
+
+function fn() {
+    // call setTimeoutAndCall() function
+}
+
+// fn() 함수에서 async 함수 호출!! ---------------------------------------------------
+function fnCaller() {
+    setTimeoutAndCall().then(result => alert(result)); // "Show up 1 after 10 seconds"
+}
+
+fnCaller();
+</script>
+</body>
+</html>

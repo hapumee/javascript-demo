@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Async/Await</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+<script type="text/javascript">
+/***** 문제: .then/catch 로 구성된 함수를 async/await 로 변경하기 *****/
+
+// .then/catch ---------------------------------------------
+function loadJson(url) {
+    console.log(url);
+
+    return fetch(url).then(function(response) {
+        if (response.status == 200) {
+            return response.json();
+        } else {
+            throw new Error(response.status);
+        }
+    })
+}
+
+loadJson('test.json').catch(alert); // Error: 404
+
+// async/await ---------------------------------------------
+async function asyncLoadJson(url) {
+    let response = await fetch(url);
+
+    if (response.status == 200) {
+        return response.json();
+    } else {
+        throw new Error(response.status);
+    }
+}
+
+// asyncLoadJson() 함수는 "async" 함수가 아니기 때문에 "await asyncLoadJson(...)"으로 작성할 수 없다.
+// 따라서, ".catch"를 사용해야 한다.
+asyncLoadJson('test.json').catch(alert); // Error: 404
+</script>
+</body>
+</html>
